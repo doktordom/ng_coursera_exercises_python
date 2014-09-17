@@ -22,11 +22,14 @@ def linear_regression(x_data, y_data, alpha, num_iterations):
     :returns theta: The optimal parameters.
     """
     theta = np.zeros(2)
-    num_data_elements = y_data.shape[0]
+    m = y_data.shape[0]
     for epoch in range(num_iterations):
-        delta_theta = np.sum((np.dot(theta.transpose(), x_data) - y_data) * x_data, 1)
-        theta = theta - alpha * 1./num_data_elements * delta_theta
-        print theta
+        error = np.dot(theta.transpose(), x_data) - y_data
+        cost = 1./(2*m) * np.sum(error ** 2)
+        theta = theta - alpha * 1./m * np.sum(error * x_data, 1)
+        print cost
+
+    return theta
 
 
 def main():
@@ -46,6 +49,8 @@ def main():
     alpha = 0.01  # Learning rate.
     num_iterations = 1500  # Number of updates before quitting.
     optimal_theta = linear_regression(x_data, y_data, alpha, num_iterations)
+
+    # Plot data with a line fitting based on the optimal theta
 
 
 if __name__ == "__main__":
