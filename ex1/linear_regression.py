@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_data_scatter(x, y, x_label, y_label):
+def plot_data_scatter(x, y, x_label, y_label, x_fit=[], y_fit=[]):
     """
     Plots data on a 2D scatter plot.
     :param x: A list of the horizontal coordinates of the data.
     :param y: A list of the vertical coordinates of the data.
     """
     plt.scatter(x, y)
+    plt.plot(x_fit, y_fit)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.show()
@@ -50,7 +51,10 @@ def main():
     num_iterations = 1500  # Number of updates before quitting.
     optimal_theta = linear_regression(x_data, y_data, alpha, num_iterations)
 
-    # Plot data with a line fitting based on the optimal theta
+    # Plot data with a line fitting based on the optimal theta.
+    x_fit = [min(populations), max(populations)]
+    y_fit = [optimal_theta[0] + optimal_theta[1]*x for x in x_fit]
+    plot_data_scatter(populations, profits, 'Population', 'Profit', x_fit, y_fit)
 
 
 if __name__ == "__main__":
