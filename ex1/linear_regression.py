@@ -18,22 +18,40 @@ def plot_data_scatter(x, y, x_label, y_label, x_fit=[], y_fit=[]):
 def linear_regression(x_data, y_data, alpha, num_iterations):
     """
     Performs batch gradient descent on the input data using the hypothesis h = theta_0 + theta_1 * x_1
-    :param x_data: A list of the horizontal coordinates of the data.
-    :param y_data: A list of the vertical coordinates of the data.
+    :param x_data: A matrix containing the input data.
+    :param y_data: A vector containing the label.
     :returns theta: The optimal parameters.
     """
-    theta = np.zeros(2)
+    theta = np.zeros(x_data.shape[0])
     m = y_data.shape[0]
     for epoch in range(num_iterations):
         error = np.dot(theta.transpose(), x_data) - y_data
         cost = 1./(2*m) * np.sum(error ** 2)
         theta = theta - alpha * 1./m * np.sum(error * x_data, 1)
         print cost
-
     return theta
 
 
-def main():
+def read_csv_data(file_path):
+    """
+    Reads in data with an arbitrary number of comma separated columns.
+    :param file_path: The path to the data file to be read in.
+    :return data: The data as a list of numpy arrays. Each array is a column of data.
+    """
+    with open(file_path, 'r') as input_data:
+        # split_data contains all the rows from the data file.
+        split_data = [row.split(',') for row in input_data]
+    # create a list of values for each column in the data file, put them in data.
+    data = []
+    for i in range(len(split_data[0])):
+        data.append(np.asarray([float(row[i]) for row in split_data]))
+    return data
+
+
+def food_truck():
+    """
+    Runs linear regression on the food truck data.
+    """
     # Read the data from ex1data1.txt file.
     with open('ex1data1.txt', 'r') as input_data:
         split_data = [(float(row.split(',')[0]), float(row.split(',')[1])) for row in input_data]
@@ -46,7 +64,7 @@ def main():
     x_data = np.vstack((np.ones(len(populations)), np.asarray(populations)))
     y_data = np.asarray(profits)
 
-    # Set hyper parameters
+    # Set hyper parameters.
     alpha = 0.01  # Learning rate.
     num_iterations = 1500  # Number of updates before quitting.
     optimal_theta = linear_regression(x_data, y_data, alpha, num_iterations)
@@ -57,5 +75,33 @@ def main():
     plot_data_scatter(populations, profits, 'Population', 'Profit', x_fit, y_fit)
 
 
+def house_portland():
+    """
+    Runs linear regression on multiple variables on the Portland house data.
+    """
+    data = read_csv_data('ex1data2.txt')
+    # Add bias array.
+    data.insert(0, np.zeros(data[0].shape))
+    x_data = np.vstack(tuple(data[:-1]))
+    y_data = data[-1]
+    # Normalize the data.
+    for column in x_data:
+        column -= np.mean(column)  # Subtract mean.
+        if np.std(column) != 0.0:  # Avoid dividing by zero.
+            column /= np.std(column)  # Divide by standard deviation.
+
+    # Set hyper parameters.
+    alpha = 0.01  # Learning rate.
+    num_iterations = 1500  # Number of updates before quitting.
+    optimal_theta = linear_regression(x_data, y_data, alpha, num_iterations)
+
+    # Un_normalize optimal_theta.
+    for column, theta in zip(x_data, optimal_theta):
+        theta *= np.std(column)
+        theta += np.mean(column)
+        print theta
+
+
 if __name__ == "__main__":
-    main()
+    # food_truck()
+    house_portland()
