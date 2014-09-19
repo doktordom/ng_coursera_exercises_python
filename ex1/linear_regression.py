@@ -126,7 +126,7 @@ def house_portland():
 
 def house_normal_equations():
     """
-    Calculates the optimal value for thea in the house data set using the normal equation.
+    Calculates the optimal value for theta in the house data set using the normal equation.
     """
     data = read_csv_data('ex1data2.txt')
     # Add bias array.
