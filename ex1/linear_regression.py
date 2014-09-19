@@ -87,12 +87,20 @@ def house_portland():
     x_data = np.vstack(tuple(data[:-1]))
     y_data = data[-1]
     # Normalize the data.
+    normalization_constants = []
     for column in x_data:
-        column -= np.mean(column)  # Subtract mean.
-        if np.std(column) != 0.0:  # Avoid dividing by zero.
-            column /= np.std(column)  # Divide by standard deviation.
-
-    print x_data
+        mean = np.mean(column)
+        column -= mean  # Subtract mean.
+        standard_deviation = np.std(column)
+        if standard_deviation != 0.0:  # Avoid dividing by zero.
+            column /= standard_deviation  # Divide by standard deviation.
+        normalization_constants.append({'mean': mean, 'std': standard_deviation})
+    # Also normalize y_data.
+    y_mean = np.mean(y_data)
+    y_data -= y_mean
+    y_std = np.std(y_data)
+    y_data /= y_std
+    y_norms = {'mean': y_mean, 'std': y_std}
 
     # Set hyper parameters.
     alpha = 0.01  # Learning rate.
@@ -101,16 +109,18 @@ def house_portland():
 
     plot_data_scatter(range(len(cost_per_epoch)), cost_per_epoch, 'epoch', 'cost')
 
-    # Un_normalize optimal_theta.
-    original_theta = []
-    for column, theta in zip(x_data, optimal_theta):
-        theta *= np.std(column)
-        theta += np.mean(column)
-        original_theta.append(theta)
-    new_input = np.array([1, 1650, 3])
-    print new_input
-    print np.asarray(original_theta)
-    prediction = np.dot(new_input, np.asarray(original_theta))
+    # Apply optimal theta to a new input.
+    new_input = [1, 1650, 3]
+    # Normalize it.
+    for index, value, norm in zip(range(len(new_input)), new_input, normalization_constants):
+        value -= norm['mean']
+        if norm['std'] != 0.0:
+            value /= norm['std']
+        new_input[index] = value
+    norm_prediction = np.dot(optimal_theta, np.asarray(new_input))
+    prediction = norm_prediction * y_norms['std']
+    prediction += y_norms['mean']
+
     print "Price prediction for a house of 1650 square feet and 3 bedrooms is:", prediction
 
 
