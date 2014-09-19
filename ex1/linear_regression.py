@@ -83,7 +83,7 @@ def house_portland():
     """
     data = read_csv_data('ex1data2.txt')
     # Add bias array.
-    data.insert(0, np.zeros(data[0].shape))
+    data.insert(0, np.ones(data[0].shape))
     x_data = np.vstack(tuple(data[:-1]))
     y_data = data[-1]
     # Normalize the data.
@@ -124,6 +124,23 @@ def house_portland():
     print "Price prediction for a house of 1650 square feet and 3 bedrooms is:", prediction
 
 
+def house_normal_equations():
+    """
+    Calculates the optimal value for thea in the house data set using the normal equation.
+    """
+    data = read_csv_data('ex1data2.txt')
+    # Add bias array.
+    data.insert(0, np.ones(data[0].shape))
+    x_data = np.vstack(tuple(data[:-1]))
+    x_data = x_data.transpose()
+    y_data = data[-1]
+    theta = np.dot(np.dot(np.linalg.inv(np.dot(x_data.transpose(), x_data)), x_data.transpose()), y_data)
+    print theta
+    new_input = [1, 1650, 3]
+    prediction = np.dot(theta, np.asarray(new_input))
+    print prediction
+
 if __name__ == "__main__":
-    # food_truck()
+    food_truck()
     house_portland()
+    house_normal_equations()
