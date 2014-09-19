@@ -92,6 +92,8 @@ def house_portland():
         if np.std(column) != 0.0:  # Avoid dividing by zero.
             column /= np.std(column)  # Divide by standard deviation.
 
+    print x_data
+
     # Set hyper parameters.
     alpha = 0.01  # Learning rate.
     num_iterations = 1500  # Number of updates before quitting.
@@ -100,10 +102,16 @@ def house_portland():
     plot_data_scatter(range(len(cost_per_epoch)), cost_per_epoch, 'epoch', 'cost')
 
     # Un_normalize optimal_theta.
+    original_theta = []
     for column, theta in zip(x_data, optimal_theta):
         theta *= np.std(column)
         theta += np.mean(column)
-        print theta
+        original_theta.append(theta)
+    new_input = np.array([1, 1650, 3])
+    print new_input
+    print np.asarray(original_theta)
+    prediction = np.dot(new_input, np.asarray(original_theta))
+    print "Price prediction for a house of 1650 square feet and 3 bedrooms is:", prediction
 
 
 if __name__ == "__main__":
