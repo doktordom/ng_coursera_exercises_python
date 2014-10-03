@@ -48,7 +48,7 @@ def logistic_regression(x_data, y_data, alpha, num_iterations):
     m = y_data.shape[0]
     cost_per_epoch = []
     for epoch in range(num_iterations):
-        error = 
+        error = sigmoid(theta, x_data)
 
 
 def main():
