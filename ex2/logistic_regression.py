@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import unittest
 from ex1.linear_regression import read_csv_data
 
 
@@ -31,10 +32,10 @@ def sigmoid(theta, x):
     Apply the sigmoid function to input vectors.
     :param theta: numpy array containing the parameters.
     :param x: numpy array containing the input.
-    :return hyp: The probability returned by applying the sigmoid function to theta and x
+    :return result: The probability returned by applying the sigmoid function to theta and x
     """
-    hyp = 1 / (1 + np.exp(-1 * np.dot(theta.transpose(), x)))
-    return hyp
+    result = 1 / (1 + np.exp(-1 * np.dot(theta.transpose(), x)))
+    return result
 
 
 def logistic_regression(x_data, y_data, alpha, num_iterations):
@@ -51,9 +52,9 @@ def logistic_regression(x_data, y_data, alpha, num_iterations):
         error = sigmoid(theta, x_data)
 
 
-def main():
+def admission_regression():
     """
-    Runs the main code in this file.
+    Runs logistic regression on the exam score data ex2data1.txt
     """
     data1 = read_csv_data('ex2data1.txt')
     # Now need to separate the data into the two different sets.
@@ -67,7 +68,7 @@ def main():
     # Add bias array to original data.
     data1.insert(0, np.ones(data1[0].shape))
     x_data = np.vstack(tuple(data1[:-1]))
-    y_data = data[-1]
+    y_data = data1[-1]
 
     # Normalize the data.
     normalization_constants = []
@@ -90,6 +91,31 @@ def main():
     num_iterations = 1500  # Number of updates before quitting.
 
     optimal_theta, cost_per_epoch = logistic_regression(x_data, y_data, alpha, num_iterations)
+
+
+class SigmoidTester(unittest.TestCase):
+    theta = np.array([1, 2])
+    x = np.array([[-10, 0, 10], [-10, 0, 10]])
+    expected_shape = (3,)
+    expected_answer = [1*10**-13, 0.5, 1-1*10**-13]
+
+    def test_result_shape(self):
+        """ Test the function returns the right shape, and the bounds of the sigmoid function. """
+        result = sigmoid(self.theta, self.x)
+        self.assertEqual(result.shape, self.expected_shape)
+
+    def test_result_values(self):
+        """ Test the bounds of the result, [should be very small, 0.5, very close to 1] """
+        result = sigmoid(self.theta, self.x)
+        self.assertLess(result[0], self.expected_answer[0])
+        self.assertEqual(result[1], self.expected_answer[1])
+        self.assertGreater(result[2], self.expected_answer[2])
+
+
+def main():
+    unittest.main()
+    # admission_regression()
+
 
 if __name__ == "__main__":
     main()
