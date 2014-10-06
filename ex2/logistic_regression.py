@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import unittest
 from ex1.linear_regression import read_csv_data
 
 
@@ -49,7 +48,15 @@ def logistic_regression(x_data, y_data, alpha, num_iterations):
     m = y_data.shape[0]
     cost_per_epoch = []
     for epoch in range(num_iterations):
-        error = sigmoid(theta, x_data)
+        # Calculate the hypothesis.
+        hypothesis = sigmoid(theta, x_data)
+        # Calculate the cost.
+        cost = (1/m) * np.sum((-y_data) * np.log(hypothesis) - (1-y_data) * np.log(1-hypothesis))
+        cost_per_epoch.append(cost)
+        print cost
+        # Do the gradient update.
+        theta = theta - alpha * 1./m * np.sum((hypothesis-y_data) * x_data, 1)
+    return theta, cost_per_epoch
 
 
 def admission_regression():
@@ -88,33 +95,13 @@ def admission_regression():
 
     # Set hyper parameters.
     alpha = 0.01  # Learning rate.
-    num_iterations = 1500  # Number of updates before quitting.
+    num_iterations = 10  # Number of updates before quitting.
 
     optimal_theta, cost_per_epoch = logistic_regression(x_data, y_data, alpha, num_iterations)
 
 
-class SigmoidTester(unittest.TestCase):
-    theta = np.array([1, 2])
-    x = np.array([[-10, 0, 10], [-10, 0, 10]])
-    expected_shape = (3,)
-    expected_answer = [1*10**-13, 0.5, 1-1*10**-13]
-
-    def test_result_shape(self):
-        """ Test the function returns the right shape, and the bounds of the sigmoid function. """
-        result = sigmoid(self.theta, self.x)
-        self.assertEqual(result.shape, self.expected_shape)
-
-    def test_result_values(self):
-        """ Test the bounds of the result, [should be very small, 0.5, very close to 1] """
-        result = sigmoid(self.theta, self.x)
-        self.assertLess(result[0], self.expected_answer[0])
-        self.assertEqual(result[1], self.expected_answer[1])
-        self.assertGreater(result[2], self.expected_answer[2])
-
-
 def main():
-    unittest.main()
-    # admission_regression()
+    admission_regression()
 
 
 if __name__ == "__main__":
