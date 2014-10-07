@@ -7,6 +7,10 @@ def plot_data_scatter(x, y, x_label, y_label, x_fit=[], y_fit=[]):
     Plots data on a 2D scatter plot.
     :param x: A list of the horizontal coordinates of the data.
     :param y: A list of the vertical coordinates of the data.
+    :param x_label: Label for the horizontal axis.
+    :param y_label: Label for the vertical axis.
+    :param x_fit: List of horizontal coordinates for a trend line.
+    :param y_fit: List of vertical coordinates for a trend line.
     """
     plt.scatter(x, y)
     plt.plot(x_fit, y_fit)
