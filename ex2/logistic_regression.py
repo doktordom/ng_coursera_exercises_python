@@ -110,10 +110,8 @@ def admission_regression():
     optimal_theta, cost_per_epoch = logistic_regression(x_data_np, y_data_np, alpha, num_iterations)
     # Plot the cost per epoch.
     line_plot(range(len(cost_per_epoch)), cost_per_epoch, 'Epoch', 'Cost')
+    
     # Plot the original data with the decision boundary.
-    print optimal_theta
-    print normalization_constants
-
     # Need to un-normalize theta, to get it back into the original form of the data.
     orig_theta = [0] * 3
     orig_theta[0] = optimal_theta[0] - \
@@ -122,7 +120,6 @@ def admission_regression():
     orig_theta[1] = optimal_theta[1] / normalization_constants[0]['std']
     orig_theta[2] = optimal_theta[2] / normalization_constants[1]['std']
     # Generate a fit to the data. Derived from y = h_theta(x) setting y = 0.5.
-    print 'x data', x_data
     x1 = np.asarray(range(int(min(x_data[0])), int(max(x_data[0]))))
     x2 = -(orig_theta[1] / orig_theta[2]) * x1 - (orig_theta[0] / orig_theta[2])
     # x2 = -(optimal_theta_orig[1] / optimal_theta_orig[2]) * x1 + 130
