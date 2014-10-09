@@ -34,7 +34,7 @@ def linear_regression(x_data, y_data, alpha, num_iterations):
         cost = 1./(2*m) * np.sum(error ** 2)
         cost_per_epoch.append(cost)
         theta = theta - alpha * 1./m * np.sum(error * x_data, 1)
-        print cost
+        # print cost
     return theta, cost_per_epoch
 
 
@@ -92,7 +92,7 @@ def house_portland():
     y_data = data[-1]
     # Normalize the data.
     normalization_constants = []
-    for column in x_data:
+    for column in x_data[1:]:
         mean = np.mean(column)
         column -= mean  # Subtract mean.
         standard_deviation = np.std(column)
@@ -116,7 +116,7 @@ def house_portland():
     # Apply optimal theta to a new input.
     new_input = [1, 1650, 3]
     # Normalize it.
-    for index, value, norm in zip(range(len(new_input)), new_input, normalization_constants):
+    for index, value, norm in zip(range(len(new_input)), new_input[1:], normalization_constants):
         value -= norm['mean']
         if norm['std'] != 0.0:
             value /= norm['std']
@@ -125,7 +125,7 @@ def house_portland():
     prediction = norm_prediction * y_norms['std']
     prediction += y_norms['mean']
 
-    print "Price prediction for a house of 1650 square feet and 3 bedrooms is:", prediction
+    print "Linear regression price prediction for a house of 1650 square feet and 3 bedrooms is:", prediction
 
 
 def house_normal_equations():
@@ -139,10 +139,10 @@ def house_normal_equations():
     x_data = x_data.transpose()
     y_data = data[-1]
     theta = np.dot(np.dot(np.linalg.inv(np.dot(x_data.transpose(), x_data)), x_data.transpose()), y_data)
-    print theta
+    # print theta
     new_input = [1, 1650, 3]
     prediction = np.dot(theta, np.asarray(new_input))
-    print prediction
+    print "Normal equations price prediction for a house of 1650 square feet and 3 bedrooms is:", prediction
 
 if __name__ == "__main__":
     food_truck()
